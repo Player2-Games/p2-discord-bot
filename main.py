@@ -9,7 +9,6 @@ load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-PROMPT = os.getenv("PROMPT")
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -17,6 +16,11 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 openai.api_key=OPENAI_API_KEY
 
+# Função que retorna o prompt
+def load_prompt_from_file(file_path):
+    with open(file_path, 'r') as file:
+        prompt = file.read()
+    return prompt
 
 # Função que busca as mensagens do discord
 async def get_channel_history(channel, limit=5):
@@ -36,7 +40,7 @@ async def get_channel_history(channel, limit=5):
 def request_gpt(messages):
     prompt = {
         "role": "system",
-        "content": PROMPT
+        "content": load_prompt_from_file('prompt.txt')
     }
     
     messages.insert(0, prompt)
